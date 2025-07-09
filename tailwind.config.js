@@ -1,16 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
         primary: {
-          gold: '#fbbf24', // yellow-400
-          blue: '#60a5fa', // blue-400  
-          white: '#ffffff',
+          gold: "#fbbf24", // yellow-400
+          blue: "#60a5fa", // blue-400
+          white: "#ffffff",
         },
       },
       animation: {
@@ -22,8 +19,12 @@ export default {
       },
       keyframes: {
         glow: {
-          "0%": { textShadow: "0 0 10px #fbbf24, 0 0 20px #fbbf24, 0 0 30px #fbbf24" },
-          "100%": { textShadow: "0 0 20px #fbbf24, 0 0 30px #fbbf24, 0 0 40px #fbbf24" },
+          "0%": {
+            textShadow: "0 0 10px #fbbf24, 0 0 20px #fbbf24, 0 0 30px #fbbf24",
+          },
+          "100%": {
+            textShadow: "0 0 20px #fbbf24, 0 0 30px #fbbf24, 0 0 40px #fbbf24",
+          },
         },
         fadeInUp: {
           "0%": { opacity: "0", transform: "translateY(30px)" },

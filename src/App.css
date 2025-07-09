@@ -192,8 +192,6 @@
   text-shadow: 0px 3px 3px #000;
 }
 
-
-
 .felt-char:nth-child(13n) {
   transform: rotate(calc((var(--random) - 0.5) * 12deg))
     translate(calc((var(--random) - 0.5) * 0.12em));

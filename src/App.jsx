@@ -1,6 +1,9 @@
 import React from "react";
 import "./App.css";
 import FeltText from "./FeltText";
+import SubscribeButton from "./components/SubscribeButton";
+import WhatsAppButton from "./components/WhatsAppButton";
+import WhatsAppBox from "./components/WhatsAppBox";
 
 function App() {
   return (
@@ -54,15 +57,25 @@ function App() {
               />
             </div>
 
-            <div className="text-center mb-4">
-              <p className="text-base md:text-lg lg:text-xl text-yellow-400 font-bold uppercase tracking-wider mb-2">
+            <div className="text-center mb-4 ">
+              <p className="text-xl md:text-lg lg:text-xl text-white font-bold uppercase tracking-wider mb-2 px-4 py-0.5 bg-black">
                 LOCALE CLIMATIZZATO
               </p>
             </div>
 
             <p className="text-lg md:text-2xl lg:text-3xl font-bold text-blue-400 text-center max-w-2xl px-4">
-              Dove il calore dell'estate incontra il fresco della Bass Music
+              Il party estivo per chi rimane a Bologna d'estate
             </p>
+
+            {/* WhatsApp Button for summer party */}
+            <div className="mt-4">
+              <WhatsAppButton />
+            </div>
+
+            {/* Subscribe Button */}
+            <div className="mt-4">
+              <SubscribeButton />
+            </div>
           </div>
         </header>
 
@@ -73,7 +86,7 @@ function App() {
             </div>
 
             <h2 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">
-              <FeltText>OFFICINE BISTROT</FeltText>
+              <FeltText>OFFICINA BISTROT</FeltText>
             </h2>
             <div className="flex items-center gap-2 mb-3 md:mb-4">
               <h3 className="text-xl md:text-2xl font-bold text-white">
@@ -140,6 +153,12 @@ function App() {
               ></iframe>
             </div>
           </div>
+
+          {/* WhatsApp Box - Above Line Up */}
+          {/* Temporarily hidden WhatsApp box */}
+          {/* <div className="mb-8 md:mb-12">
+            <WhatsAppBox />
+          </div> */}
 
           {/* Line Up Section - Felt Board Style */}
           <div className="felt-board rounded-2xl  md:rounded-3xl p-6 md:p-10 lg:p-12 border border-white/20 animate-slideInLeft">
