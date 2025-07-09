@@ -72,10 +72,7 @@ function App() {
               <WhatsAppButton />
             </div>
 
-            {/* Subscribe Button */}
-            <div className="mt-4">
-              <SubscribeButton />
-            </div>
+
           </div>
         </header>
 
@@ -236,10 +233,15 @@ function App() {
             style={{ filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.6))" }}
           />
         </div>
+
+        {/* Subscribe Button - Moved below partner logos */}
+        <div className="flex justify-center mt-8 md:mt-12">
+          <SubscribeButton />
+        </div>
       </div>
 
       {/* Professional Footer with Backdrop Blur */}
-      <div className="mt-16 md:mt-20 relative z-50 backdrop-blur-md bg-white/10 py-4 px-6">
+      <div className="mt-16 md:mt-20 relative backdrop-blur-md bg-white/10 py-4 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-2">
             {/* Main branding line */}
