@@ -4,11 +4,13 @@ import FeltText from "./FeltText";
 import SubscribeButton from "./components/SubscribeButton";
 import WhatsAppButton from "./components/WhatsAppButton";
 import WhatsAppBox from "./components/WhatsAppBox";
+import ScrollHeader from "./components/ScrollHeader";
 
 function App() {
   return (
     <div className="min-h-screen text-white overflow-hidden bg-image-overlay light">
-      <div className="content-overlay px-4 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 lg:py-16 max-w-[1080px] mx-auto">
+      <ScrollHeader />
+      <div className="content-overlay px-4 md:px-8 lg:px-12 xl:px-16 pt-8 md:pt-12 lg:pt-16 max-w-[1080px] mx-auto">
         <header className="text-center mb-8 md:mb-12">
           <div className="flex flex-col items-center space-y-4 md:space-y-6">
             {/* Presentatori */}
@@ -238,10 +240,9 @@ function App() {
         <div className="flex justify-center mt-8 md:mt-12">
           <SubscribeButton />
         </div>
-      </div>
 
-      {/* Professional Footer with Backdrop Blur */}
-      <div className="mt-16 md:mt-20 relative backdrop-blur-md bg-white/10 py-4 px-6">
+        {/* Professional Footer with Better Visibility */}
+        <div className="mt-16 md:mt-20 relative bg-black/90 py-6 -mx-4 md:-mx-8 lg:-mx-12 xl:-mx-16 px-4 md:px-8 lg:px-12 xl:px-16 z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-2">
             {/* Main branding line */}
@@ -249,7 +250,7 @@ function App() {
               <span className="text-white text-sm md:text-base font-light italic">
                 Realizzato da
               </span>
-              <span className="text-white text-base md:text-lg font-bold tracking-wide">
+              <span className="text-yellow-400 text-base md:text-lg font-bold tracking-wide">
                 Matteo Zampieri
               </span>
             </div>
@@ -278,6 +279,7 @@ function App() {
               Sviluppo web • Design • Automazioni • Creatività digitale
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
