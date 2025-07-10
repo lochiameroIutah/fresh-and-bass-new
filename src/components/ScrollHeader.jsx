@@ -42,7 +42,7 @@ const ScrollHeader = () => {
           <button
             onClick={() =>
               window.open(
-                "https://chat.whatsapp.com/Ek7Ek7Ek7Ek7Ek7Ek7Ek7",
+                "https://chat.whatsapp.com/J5r4GGgcBmH6la9XooWAHh",
                 "_blank"
               )
             }
