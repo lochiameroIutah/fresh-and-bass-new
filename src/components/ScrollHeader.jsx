@@ -28,9 +28,9 @@ const ScrollHeader = () => {
         {/* Contenitore logo e testo */}
         <div className="flex items-center gap-3">
           <img
-            src="public/fresh-and-bass-logo-singolo-YZ9jxD2GBvI9v9XG.webp"
+            src="/fresh-and-bass-logo-singolo-YZ9jxD2GBvI9v9XG.webp"
             alt="Fresh and Bass"
-            className="h-8 w-8"
+            className="h-8 w-auto"
           />
           <span className="text-yellow-400 text-sm font-bold uppercase tracking-wide">
             11 LUGLIO A BOLOGNA
