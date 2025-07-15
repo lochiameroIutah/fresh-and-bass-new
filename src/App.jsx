@@ -28,10 +28,9 @@ function App() {
             <div className="logo-section flex items-center justify-center gap-2 md:gap-6 lg:gap-8">
               {/* Immagine rotante sinistra - visibile anche su mobile */}
               <img
-                className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 animate-spin"
+                className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28"
                 style={{
-                  filter: "drop-shadow(0 0 10px rgba(100,181,246,0.5))",
-                  animationDuration: "10s",
+                  animation: "spinWithBlur 3.333s linear infinite",
                 }}
                 src="/fresh sun.webp"
                 alt="Rotating Element Left"
@@ -49,10 +48,9 @@ function App() {
 
               {/* Immagine rotante destra - visibile anche su mobile */}
               <img
-                className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 animate-spin"
+                className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28"
                 style={{
-                  filter: "drop-shadow(0 0 10px rgba(100,181,246,0.5))",
-                  animation: "spin 12s linear infinite reverse",
+                  animation: "reverseSpinWithBlur 4s linear infinite",
                 }}
                 src="/fresh sun.webp"
                 alt="Rotating Element Right"
@@ -81,7 +79,7 @@ function App() {
         <div className="my-8 md:my-12">
           <div className="felt-board rounded-2xl md:rounded-3xl p-6 md:p-8 border border-white/20 animate-slideInRight mb-8 md:mb-12">
             <div className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-yellow-400 mb-4 md:mb-6">
-              <FeltText>11 LUGLIO</FeltText>
+              <FeltText>18 LUGLIO</FeltText>
             </div>
 
             <h2 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">
@@ -118,7 +116,10 @@ function App() {
             </div>
 
             <div className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-400 mb-4 md:mb-6">
-              DALLE 23:00 ALLE 02:30
+              DALLE 18:00 ALLE 02:00
+            </div>
+            <div className="text-base md:text-lg text-white mb-4">
+              OUTDOOR 18:00-22:00 | INDOOR 22:00-02:00
             </div>
 
             <div
@@ -165,57 +166,20 @@ function App() {
               <FeltText>Line Up</FeltText>
             </h2>
 
-            <div className="flex flex-wrap items-end gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8 lg:mb-10">
-              <FeltText className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-yellow-400">
-                JAHPAWA
-              </FeltText>
-              <span className="text-base md:text-lg lg:text-xl text-blue-400 font-semibold">
-                B2B
-              </span>
-              <FeltText className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-yellow-400">
-                DOMPROD
-              </FeltText>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 md:mb-8 justify-items-center">
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">JAHPAWA</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">RIC DE LARGE</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">DOMPROD</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">GRIME SPITTERZ</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">EPCO RAW</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">WEERO</FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">CLOUD</FeltText>
+            </div>
+            <div className="text-xl md:text-2xl text-blue-400 font-bold mb-4 text-center">
+              Hosted by CESK
             </div>
 
-            <div className="text-left text-3xl md:text-3xl lg:text-4xl text-blue-400 my-4 md:my-6 lg:my-8 font-bold">
-              &
-            </div>
-
-            <div
-              className="flex flex-col col-1 justify-center items-start gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8 lg:mb-10"
-              style={{ lineHeight: "0.9" }}
-            >
-              <FeltText className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-yellow-400">
-                RIC DE LARGE
-              </FeltText>
-              <span className="text-base -mt-4 md:text-lg lg:text-xl text-blue-400 font-semibold">
-                B2B
-              </span>
-              <FeltText className="text-2xl -mt-4 md:text-3xl lg:text-4xl xl:text-5xl font-bold text-yellow-400">
-                EPCORAW
-              </FeltText>
-            </div>
-
-            <div className="text-xl md:text-2xl lg:text-3xl text-blue-400 mb-4 md:mb-6 text-left">
-              <p className="font-bold mb-1" style={{ lineHeight: "0.8" }}>
-                Hosted by
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="text-white font-black text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-                  <FeltText>GRIME</FeltText>
-                  <br />
-                  <FeltText>SPITTERZ</FeltText>
-                </div>
-                <img
-                  src="/GS mani.webp"
-                  alt="Grime Spitterz Hands"
-                  className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain"
-                  style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))" }}
-                />
-              </div>
-            </div>
-
-            <div className="text-lg md:text-xl lg:text-2xl text-left">
+            <div className="text-lg md:text-xl lg:text-2xl text-center">
               <p className="font-bold">
                 <span className="text-blue-400">Live Streaming</span>
                 <br />
