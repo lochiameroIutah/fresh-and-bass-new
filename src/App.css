@@ -132,30 +132,30 @@
 @keyframes spinWithBlur {
   0% {
     transform: rotate(0deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(0px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(0px);
   }
   50% {
     transform: rotate(180deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(5px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(5px);
   }
   100% {
     transform: rotate(360deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(0px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(0px);
   }
 }
 
 @keyframes reverseSpinWithBlur {
   0% {
     transform: rotate(0deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(0px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(0px);
   }
   50% {
     transform: rotate(-180deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(5px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(5px);
   }
   100% {
     transform: rotate(-360deg);
-    filter: drop-shadow(0 0 10px rgba(100, 181, 246, 0.5)) blur(0px);
+    filter: drop-shadow(0 0 10px rgba(100,181,246,0.5)) blur(0px);
   }
 }
 @keyframes zoom-in {

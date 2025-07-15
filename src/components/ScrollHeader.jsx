@@ -1,24 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from 'react';
 import WhatsAppButton from "./WhatsAppButton";
 
 const ScrollHeader = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({});
-  const [isEventStarted, setIsEventStarted] = useState(false);
-  const [showEasterEgg, setShowEasterEgg] = useState(false);
-  const [hasTriggeredEasterEgg, setHasTriggeredEasterEgg] = useState(false);
-  const audioRef = useRef(null);
-  const confettiRef = useRef(null);
 
-  // Modifica questa data per cambiare l'orario di scadenza del timer
-  // Formato: new Date(anno, mese-1, giorno, ora, minuti, secondi)
-  const eventDate = new Date(2025, 6, 18, 18, 0, 0); // 18 luglio 2025 alle 18:00
-  
-  // Debug: mostra sempre il timer per test
-  console.log('Timer values:', timeLeft);
-  console.log('Event started:', isEventStarted);
-  console.log('Current time:', new Date());
-  console.log('Event time:', eventDate);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,114 +30,13 @@ const ScrollHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = eventDate.getTime() - now;
 
-      if (distance < 0) {
-        setIsEventStarted(true);
-        if (!hasTriggeredEasterEgg && !sessionStorage.getItem('easterEggTriggered')) {
-          setShowEasterEgg(true);
-          setHasTriggeredEasterEgg(true);
-          sessionStorage.setItem('easterEggTriggered', 'true');
-          
-          // Riproduci audio
-          if (audioRef.current) {
-            audioRef.current.play().catch(e => console.log('Audio play failed:', e));
-          }
-          
-          // Crea confetti
-          createConfetti();
-          
-          // Nascondi easter egg dopo 5 secondi
-          setTimeout(() => {
-            setShowEasterEgg(false);
-          }, 5000);
-        }
-        clearInterval(timer);
-      } else {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        setTimeLeft({ days, hours, minutes, seconds });
-      }
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, [eventDate, hasTriggeredEasterEgg]);
-
-  const createConfetti = () => {
-    const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
-    const confettiContainer = document.createElement('div');
-    confettiContainer.style.position = 'fixed';
-    confettiContainer.style.top = '0';
-    confettiContainer.style.left = '0';
-    confettiContainer.style.width = '100%';
-    confettiContainer.style.height = '100%';
-    confettiContainer.style.pointerEvents = 'none';
-    confettiContainer.style.zIndex = '9999';
-    document.body.appendChild(confettiContainer);
-
-    for (let i = 0; i < 100; i++) {
-      const confetti = document.createElement('div');
-      confetti.style.position = 'absolute';
-      confetti.style.width = '10px';
-      confetti.style.height = '10px';
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.left = Math.random() * 100 + '%';
-      confetti.style.top = '-10px';
-      confetti.style.borderRadius = '50%';
-      confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
-      confettiContainer.appendChild(confetti);
-    }
-
-    setTimeout(() => {
-      document.body.removeChild(confettiContainer);
-    }, 5000);
-  };
-
-  useEffect(() => {
-    // Aggiungi CSS per l'animazione dei confetti
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes confettiFall {
-        to {
-          transform: translateY(100vh) rotate(360deg);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   return (
     <>
-      {/* Audio element per l'easter egg */}
-      <audio ref={audioRef} preload="auto">
-        <source src="/bombaclaaat.mp3" type="audio/mpeg" />
-      </audio>
 
-      {/* Easter Egg Overlay */}
-      {showEasterEgg && (
-        <div className="fixed inset-0 z-[10000] bg-black/80 flex items-center justify-center">
-          <div 
-            className="text-6xl md:text-8xl lg:text-9xl font-black uppercase transform rotate-12 animate-pulse"
-            style={{
-              fontFamily: 'Impact, Arial Black, sans-serif',
-              color: '#000000',
-              textShadow: '4px 4px 0px #ffffff, -4px -4px 0px #ffffff, 4px -4px 0px #ffffff, -4px 4px 0px #ffffff, 0px 4px 0px #ffffff, 4px 0px 0px #ffffff, 0px -4px 0px #ffffff, -4px 0px 0px #ffffff, 2px 2px 0px #ffffff, -2px -2px 0px #ffffff, 2px -2px 0px #ffffff, -2px 2px 0px #ffffff'
-            }}
-          >
-            BOMBOCLAAAAT!
-          </div>
-        </div>
-      )}
 
       {/* Header principale */}
       <div
@@ -170,51 +54,10 @@ const ScrollHeader = () => {
                 alt="Fresh and Bass"
                 className="h-6 w-auto"
               />
-              <div className="flex items-center gap-2">
-                <div className="text-white text-xs font-bold leading-tight">
-                  <div>IL 18 LUGLIO</div>
-                  <div>AL DUMBO (BO)</div>
-                </div>
-                {!isEventStarted ? (
-                   <div className="flex justify-center items-center space-x-1 text-center">
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-sm font-black font-mono">
-                         {String(timeLeft.days || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         GG
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-sm font-black font-mono">
-                         {String(timeLeft.hours || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         ORE
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-sm font-black font-mono">
-                         {String(timeLeft.minutes || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         MIN
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-sm font-black font-mono">
-                         {String(timeLeft.seconds || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         SEC
-                       </div>
-                     </div>
-                   </div>
-                  ) : (
-                  <div className="text-green-400 text-xs font-bold">
-                    La festa è iniziata!
-                  </div>
-                )}
+              <div className="flex flex-col">
+                <span className="text-yellow-400 text-xs font-bold uppercase tracking-wide">
+                  18 LUGLIO AL DUMBO(BO)
+                </span>
               </div>
             </div>
 
@@ -245,50 +88,10 @@ const ScrollHeader = () => {
                 alt="Fresh and Bass"
                 className="h-8 w-auto"
               />
-              <div className="flex items-center gap-4">
-                <span className="text-white text-sm font-bold uppercase tracking-wide">
-                  18 LUGLIO AL DUMBO (BO)
+              <div className="flex flex-col">
+                <span className="text-yellow-400 text-sm font-bold uppercase tracking-wide">
+                  18 LUGLIO AL DUMBO(BO)
                 </span>
-                {!isEventStarted ? (
-                   <div className="flex justify-center items-center space-x-2 text-center">
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-lg font-black font-mono">
-                         {String(timeLeft.days || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         GG
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-lg font-black font-mono">
-                         {String(timeLeft.hours || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         ORE
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-lg font-black font-mono">
-                         {String(timeLeft.minutes || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         MIN
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-lg font-black font-mono">
-                         {String(timeLeft.seconds || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-xs text-white leading-none">
-                         SEC
-                       </div>
-                     </div>
-                   </div>
-                  ) : (
-                  <div className="text-green-400 text-sm font-bold">
-                    La festa è iniziata!
-                  </div>
-                )}
               </div>
             </div>
 
@@ -318,50 +121,10 @@ const ScrollHeader = () => {
                 alt="Fresh and Bass"
                 className="h-10 w-auto"
               />
-              <div className="flex items-center gap-6">
-                <span className="text-white text-lg font-bold uppercase tracking-wide">
-                  18 LUGLIO AL DUMBO (BO)
+              <div className="flex flex-col">
+                <span className="text-yellow-400 text-lg font-bold uppercase tracking-wide">
+                  18 LUGLIO AL DUMBO(BO)
                 </span>
-                {!isEventStarted ? (
-                   <div className="flex justify-center items-center space-x-3 text-center">
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-xl font-black font-mono">
-                         {String(timeLeft.days || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-sm text-white leading-none">
-                         GG
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-xl font-black font-mono">
-                         {String(timeLeft.hours || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-sm text-white leading-none">
-                         ORE
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-xl font-black font-mono">
-                         {String(timeLeft.minutes || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-sm text-white leading-none">
-                         MIN
-                       </div>
-                     </div>
-                     <div className="flex flex-col items-center">
-                       <div className="text-white text-xl font-black font-mono">
-                         {String(timeLeft.seconds || 0).padStart(2, '0')}
-                       </div>
-                       <div className="text-sm text-white leading-none">
-                         SEC
-                       </div>
-                     </div>
-                   </div>
-                  ) : (
-                  <div className="text-green-400 text-lg font-bold">
-                    La festa è iniziata!
-                  </div>
-                )}
               </div>
             </div>
 
