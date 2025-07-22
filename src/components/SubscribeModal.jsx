@@ -8,6 +8,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
     customGenre: "",
     instagram: "",
   });
+  const [currentStep, setCurrentStep] = useState(1);
   const [showInstagram, setShowInstagram] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -36,29 +37,49 @@ const SubscribeModal = ({ isOpen, onClose }) => {
     setError("");
   };
 
+  // Step validation function
+  const isStepValid = () => {
+    if (currentStep === 1) {
+      return (
+        formData.preferredGenre !== "" &&
+        (formData.preferredGenre !== "Altro" ||
+          formData.customGenre.trim() !== "")
+      );
+    }
+    if (currentStep === 2) {
+      return formData.email.trim() !== "";
+    }
+    if (currentStep === 3) {
+      return true; // Instagram is optional
+    }
+    return false;
+  };
+
+  // Navigation functions
+  const handleStepOne = () => {
+    if (isStepValid()) {
+      setCurrentStep(2);
+    }
+  };
+
+  const handleStepTwo = () => {
+    if (isStepValid()) {
+      setCurrentStep(3);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentStep === 1) {
+      handleStepOne();
+    } else if (currentStep === 2) {
+      handleStepTwo();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-
-    // Validation
-    if (
-      !formData.email.trim() ||
-      !formData.preferredGenre ||
-      (formData.preferredGenre === "Altro" && !formData.customGenre.trim())
-    ) {
-      setError("Tutti i campi sono obbligatori");
-      setIsLoading(false);
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError("Inserisci un indirizzo email valido");
-      setIsLoading(false);
-      return;
-    }
 
     try {
       // Subscribe user
@@ -121,6 +142,8 @@ const SubscribeModal = ({ isOpen, onClose }) => {
         customGenre: "",
         instagram: "",
       });
+      setCurrentStep(1);
+      setShowInstagram(false);
       setError("");
       setShowSuccess(false);
     }
@@ -167,7 +190,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-3 tracking-tight">
+                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
                   Accesso Autorizzato! 🎉
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
@@ -186,7 +209,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
             // Form
             <>
               {/* Header */}
-              <div className="relative p-4 md:p-6">
+              <div className="relative pt-4 pb-0 px-4 md:p-6 md:pb-0">
                 <button
                   onClick={handleClose}
                   className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-black/20 hover:bg-black/30 text-white hover:text-yellow-400 transition-all duration-200 flex items-center justify-center"
@@ -208,124 +231,147 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                 </button>
 
                 <div className="text-center">
-                  <h2 className="text-2xl md:text-3xl font-black text-yellow-400 mb-3 tracking-tight">
+                  <h2 className="text-2xl md:text-3xl font-black text-yellow-400 mb-4 tracking-tight">
                     Party Access
                   </h2>
-                  <p className="text-sm md:text-base text-white leading-relaxed px-2">
-                    Inserisci i tuoi dati per ricevere il link segreto del
-                    gruppo WhatsApp
-                  </p>
+                  <div className="transition-all text-left duration-500 ease-in-out">
+                    {currentStep === 1 && (
+                      <p className="text-lg md:text-xl text-white font-bold px-1 leading-7 animate-fadeIn">
+                        Qual è il tuo genere musicale preferito?
+                      </p>
+                    )}
+                    {currentStep === 2 && (
+                      <p className="text-lg md:text-xl text-white font-bold px-1 leading-7 animate-fadeIn">
+                        Dove vuoi ricevere il link del gruppo WhatsApp?
+                      </p>
+                    )}
+                    {currentStep === 3 && (
+                      <p className="text-lg md:text-xl text-white font-bold px-1 leading-7 animate-fadeIn">
+                        Un'ultima cosa...
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="p-4 md:p-6 space-y-3 md:space-y-4"
-              >
-                {/* Email */}
-                <div>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
-                    placeholder="latuamail@email.com"
-                    disabled={isLoading}
-                  />
-                </div>
+              <div className="p-4 pt-0 md:p-6 md:pt-0 space-y-3 md:space-y-4">
+                {/* Step 1: Genre Selection */}
+                {currentStep === 1 && (
+                  <div className="animate-fadeIn">
+                    {/* Genre */}
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                        </svg>
+                      </div>
+                      <select
+                        id="preferredGenre"
+                        name="preferredGenre"
+                        value={formData.preferredGenre}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl text-black transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70 appearance-none cursor-pointer"
+                        disabled={isLoading}
+                      >
+                        <option value="">
+                          Seleziona il tuo genere preferito
+                        </option>
+                        {musicGenres.map((genre) => (
+                          <option key={genre} value={genre}>
+                            {genre}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M7 10l5 5 5-5z" />
+                        </svg>
+                      </div>
+                    </div>
 
-                {/* Genre */}
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                    </svg>
+                    {/* Custom Genre - Show only when "Altro" is selected */}
+                    {formData.preferredGenre === "Altro" && (
+                      <div className="mt-3 animate-fadeIn">
+                        <input
+                          type="text"
+                          id="customGenre"
+                          name="customGenre"
+                          value={formData.customGenre}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
+                          placeholder="Scrivi il tuo genere preferito"
+                          disabled={isLoading}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <select
-                    id="preferredGenre"
-                    name="preferredGenre"
-                    value={formData.preferredGenre}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl text-black transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70 appearance-none cursor-pointer"
-                    disabled={isLoading}
-                  >
-                    <option value="">Seleziona il tuo genere preferito</option>
-                    {musicGenres.map((genre) => (
-                      <option key={genre} value={genre}>
-                        {genre}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M7 10l5 5 5-5z" />
-                    </svg>
-                  </div>
-                </div>
+                )}
 
-                {/* Custom Genre - Show only when "Altro" is selected */}
-                {formData.preferredGenre === "Altro" && (
-                  <div>
+                {/* Step 2: Email */}
+                {currentStep === 2 && (
+                  <div className="animate-fadeIn">
                     <input
-                      type="text"
-                      id="customGenre"
-                      name="customGenre"
-                      value={formData.customGenre}
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
-                      placeholder="Scrivi il tuo genere preferito"
+                      placeholder="latuamail@email.com"
                       disabled={isLoading}
                     />
                   </div>
                 )}
 
-                {/* Instagram Checkbox */}
-                <div className="flex items-start space-x-3">
-                  <div className="flex items-center mt-1">
-                    <input
-                      type="checkbox"
-                      id="instagram-checkbox"
-                      checked={showInstagram}
-                      onChange={(e) => setShowInstagram(e.target.checked)}
-                      className="w-5 h-5 rounded-md border-2 border-white bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-yellow-400 focus:ring-offset-0 cursor-pointer"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label
-                      htmlFor="instagram-checkbox"
-                      className="block text-sm text-white cursor-pointer"
-                    >
-                      Clicca qui per aggiungere il tuo Instagram{" "}
-                      <span className="text-gray-400">(opzionale)</span> <br />
-                      <span className="text-xs text-gray-500">
-                        potremmo inviarti qualcosa di succulento per la serata
-                      </span>
-                    </label>
-                    {showInstagram && (
+                {/* Step 3: Instagram */}
+                {currentStep === 3 && (
+                  <div className="flex items-start space-x-3 animate-fadeIn">
+                    <div className="flex items-center mt-1">
                       <input
-                        type="text"
-                        id="instagram"
-                        name="instagram"
-                        value={formData.instagram}
-                        onChange={handleInputChange}
-                        className="w-full mt-2 px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
-                        placeholder="@tuousername"
-                        disabled={isLoading}
+                        type="checkbox"
+                        id="instagram-checkbox"
+                        checked={showInstagram}
+                        onChange={(e) => setShowInstagram(e.target.checked)}
+                        className="w-5 h-5 rounded-md border-2 border-white bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-yellow-400 focus:ring-offset-0 cursor-pointer"
                       />
-                    )}
+                    </div>
+                    <div className="flex-1">
+                      <label
+                        htmlFor="instagram-checkbox"
+                        className="block text-sm text-white cursor-pointer"
+                      >
+                        Clicca su questo pulsante se vuoi aggiungere il tuo
+                        Instagram{" "}
+                        <span className="text-gray-400">(opzionale)</span>{" "}
+                        <br />
+                        <span className="text-xs text-gray-500">
+                          Potremmo inviarti qualcosa di succulento per la serata
+                        </span>
+                      </label>
+                      {showInstagram && (
+                        <input
+                          type="text"
+                          id="instagram"
+                          name="instagram"
+                          value={formData.instagram}
+                          onChange={handleInputChange}
+                          className="w-full mt-2 px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70 animate-fadeIn"
+                          placeholder="@il_tuo_instagram"
+                          disabled={isLoading}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Error message */}
                 {error && (
@@ -349,23 +395,16 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="group w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                {/* Navigation Buttons */}
+                <div className="space-y-3">
+                  {(currentStep === 1 || currentStep === 2) && (
+                    <button
+                      onClick={handleNextStep}
+                      disabled={isLoading || !isStepValid()}
+                      className="group w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] animate-fadeIn"
+                    >
                       <span className="tracking-wide">
-                        Verifica in corso...
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="tracking-wide">
-                        Ottieni Link Segreto
+                        {currentStep === 1 ? "Continua" : "Conferma e Continua"}
                       </span>
                       <svg
                         className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
@@ -380,10 +419,46 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                           d="M13 7l5 5m0 0l-5 5m5-5H6"
                         />
                       </svg>
-                    </>
+                    </button>
                   )}
-                </button>
-              </form>
+
+                  {currentStep === 3 && (
+                    <button
+                      onClick={handleSubmit}
+                      disabled={isLoading}
+                      className="group w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] animate-fadeIn"
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                          <span className="tracking-wide">
+                            Verifica in corso...
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="tracking-wide">
+                            Ottieni Link Segreto
+                          </span>
+                          <svg
+                            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 7l5 5m0 0l-5 5m5-5H6"
+                            />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
             </>
           )}
         </div>
