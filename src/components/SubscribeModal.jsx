@@ -3,11 +3,12 @@ import { subscribeUser, verifySubscription } from "../lib/supabase";
 
 const SubscribeModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     preferredGenre: "",
     customGenre: "",
+    instagram: "",
   });
+  const [showInstagram, setShowInstagram] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -42,7 +43,6 @@ const SubscribeModal = ({ isOpen, onClose }) => {
 
     // Validation
     if (
-      !formData.name.trim() ||
       !formData.email.trim() ||
       !formData.preferredGenre ||
       (formData.preferredGenre === "Altro" && !formData.customGenre.trim())
@@ -67,9 +67,9 @@ const SubscribeModal = ({ isOpen, onClose }) => {
           ? formData.customGenre
           : formData.preferredGenre;
       const subscribeResult = await subscribeUser(
-        formData.name,
         formData.email,
-        finalGenre
+        finalGenre,
+        formData.instagram
       );
 
       if (!subscribeResult.success) {
@@ -96,10 +96,10 @@ const SubscribeModal = ({ isOpen, onClose }) => {
           onClose();
           setShowSuccess(false);
           setFormData({
-            name: "",
             email: "",
             preferredGenre: "",
             customGenre: "",
+            instagram: "",
           });
         }, 2000);
       } else {
@@ -115,7 +115,12 @@ const SubscribeModal = ({ isOpen, onClose }) => {
   const handleClose = () => {
     if (!isLoading) {
       onClose();
-      setFormData({ name: "", email: "", preferredGenre: "", customGenre: "" });
+      setFormData({
+        email: "",
+        preferredGenre: "",
+        customGenre: "",
+        instagram: "",
+      });
       setError("");
       setShowSuccess(false);
     }
@@ -163,11 +168,11 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-black mb-3 tracking-tight">
-                  Perfetto! 🎉
+                  Accesso Autorizzato! 🎉
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  Ti abbiamo aggiunto alla lista! Ora ti portiamo nel gruppo
-                  WhatsApp per tutti gli aggiornamenti.
+                  Perfetto! Ora hai accesso al gruppo WhatsApp segreto del
+                  Party.
                 </p>
                 <div className="flex items-center justify-center space-x-3 text-green-600 bg-green-50 rounded-full px-4 py-2 mx-auto w-fit">
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-600 border-t-transparent"></div>
@@ -204,12 +209,11 @@ const SubscribeModal = ({ isOpen, onClose }) => {
 
                 <div className="text-center">
                   <h2 className="text-2xl md:text-3xl font-black text-yellow-400 mb-3 tracking-tight">
-                    Ne faremo altri!
+                    Party Access
                   </h2>
                   <p className="text-sm md:text-base text-white leading-relaxed px-2">
-                    Siamo un gruppo di nuovi regaz da tutt'Italia, sbarcati a
-                    Bolo! Vogliamo fare festa tutti insieme, e l'email è il modo
-                    migliore per non perderci di vista!
+                    Inserisci i tuoi dati per ricevere il link segreto del
+                    gruppo WhatsApp
                   </p>
                 </div>
               </div>
@@ -219,20 +223,6 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                 onSubmit={handleSubmit}
                 className="p-4 md:p-6 space-y-3 md:space-y-4"
               >
-                {/* Name */}
-                <div>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
-                    placeholder="Il tuo nome"
-                    disabled={isLoading}
-                  />
-                </div>
-
                 {/* Email */}
                 <div>
                   <input
@@ -242,7 +232,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
-                    placeholder="la.tua@email.com"
+                    placeholder="latuamail@email.com"
                     disabled={isLoading}
                   />
                 </div>
@@ -300,6 +290,43 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
+                {/* Instagram Checkbox */}
+                <div className="flex items-start space-x-3">
+                  <div className="flex items-center mt-1">
+                    <input
+                      type="checkbox"
+                      id="instagram-checkbox"
+                      checked={showInstagram}
+                      onChange={(e) => setShowInstagram(e.target.checked)}
+                      className="w-5 h-5 rounded-md border-2 border-white bg-transparent checked:bg-white checked:border-white focus:ring-2 focus:ring-yellow-400 focus:ring-offset-0 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label
+                      htmlFor="instagram-checkbox"
+                      className="block text-sm text-white cursor-pointer"
+                    >
+                      Clicca qui per aggiungere il tuo Instagram{" "}
+                      <span className="text-gray-400">(opzionale)</span> <br />
+                      <span className="text-xs text-gray-500">
+                        potremmo inviarti qualcosa di succulento per la serata
+                      </span>
+                    </label>
+                    {showInstagram && (
+                      <input
+                        type="text"
+                        id="instagram"
+                        name="instagram"
+                        value={formData.instagram}
+                        onChange={handleInputChange}
+                        className="w-full mt-2 px-4 py-3 rounded-xl text-black placeholder-gray-500 transition-all duration-300 bg-white focus:bg-white border-2 border-white/50 focus:border-yellow-400 hover:border-white/70"
+                        placeholder="@tuousername"
+                        disabled={isLoading}
+                      />
+                    )}
+                  </div>
+                </div>
+
                 {/* Error message */}
                 {error && (
                   <div className="p-3 bg-red-500/20 border-2 border-red-400/50 rounded-xl animate-fadeIn">
@@ -326,16 +353,20 @@ const SubscribeModal = ({ isOpen, onClose }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="group w-full bg-yellow-400 hover:bg-yellow-300 text-black py-3 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="group w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {isLoading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-black border-t-transparent"></div>
-                      <span className="tracking-wide">Iscrizione...</span>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      <span className="tracking-wide">
+                        Verifica in corso...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <span className="tracking-wide">Iscriviti</span>
+                      <span className="tracking-wide">
+                        Ottieni Link Segreto
+                      </span>
                       <svg
                         className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
                         fill="none"

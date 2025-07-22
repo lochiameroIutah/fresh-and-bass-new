@@ -64,12 +64,17 @@ function App() {
             </div>
 
             <p className="text-lg md:text-2xl lg:text-3xl font-bold text-blue-400 text-center max-w-2xl px-4">
-              Il party estivo per chi rimane a Bologna d'estate
+              Il party estivo col basso che spinge
             </p>
 
             {/* WhatsApp Button for summer party */}
             <div className="mt-4">
               <WhatsAppButton />
+            </div>
+
+            {/* Subscribe Button - Moved below partner logos */}
+            <div className="flex justify-center mt-8 md:mt-12">
+              <SubscribeButton />
             </div>
           </div>
         </header>
@@ -210,11 +215,6 @@ function App() {
             className="rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl max-w-full h-auto w-full max-w-4xl"
             style={{ filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.6))" }}
           />
-        </div>
-
-        {/* Subscribe Button - Moved below partner logos */}
-        <div className="flex justify-center mt-8 md:mt-12">
-          <SubscribeButton />
         </div>
 
         {/* Professional Footer with Better Visibility */}
