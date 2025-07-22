@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAdminSetting, updateAdminSetting, getAllAdminSettings } from '../lib/supabase';
+import { getAdminSetting, updateAdminSetting, getAllAdminSettings, getAllSubscribers } from '../lib/supabase';
 import './AdminToggle.css';
 
 const AdminDashboard = () => {
@@ -8,6 +8,7 @@ const AdminDashboard = () => {
   const [comingSoonText, setComingSoonText] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [downloadingCsv, setDownloadingCsv] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -76,6 +77,58 @@ const AdminDashboard = () => {
     const result = await updateAdminSetting('coming_soon_text', newText);
     if (!result.success) {
       setError('Errore nell\'aggiornamento del testo');
+    }
+  };
+
+  const downloadCsv = async () => {
+    try {
+      setDownloadingCsv(true);
+      setError(null);
+      
+      const result = await getAllSubscribers();
+      
+      if (!result.success) {
+        setError('Errore nel recupero dei dati: ' + result.error);
+        return;
+      }
+      
+      if (!result.data || result.data.length === 0) {
+        setError('Nessun dato disponibile per il download');
+        return;
+      }
+      
+      // Converti i dati in formato CSV
+      const csvHeaders = ['ID', 'Email', 'Genere Preferito', 'Instagram', 'Data Iscrizione'];
+      const csvRows = result.data.map(subscriber => [
+        subscriber.id,
+        subscriber.email,
+        subscriber.preferred_genre || '',
+        subscriber.instagram || '',
+        new Date(subscriber.created_at).toLocaleString('it-IT')
+      ]);
+      
+      // Crea il contenuto CSV
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvRows.map(row => row.map(field => `"${field}"`).join(','))
+      ].join('\n');
+      
+      // Crea e scarica il file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+    } catch (err) {
+      console.error('Errore durante il download:', err);
+      setError('Errore imprevisto durante il download del CSV');
+    } finally {
+      setDownloadingCsv(false);
     }
   };
 
@@ -162,6 +215,26 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+
+        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Gestione Dati Utenti</h2>
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              <p>Scarica tutti i dati degli utenti iscritti in formato CSV</p>
+            </div>
+            <button
+              onClick={downloadCsv}
+              disabled={downloadingCsv}
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                downloadingCsv
+                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {downloadingCsv ? 'Scaricando...' : 'Scarica CSV'}
+            </button>
+          </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 mt-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Stato Attuale</h2>

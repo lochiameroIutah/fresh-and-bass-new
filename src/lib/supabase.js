@@ -124,3 +124,23 @@ export async function getAllAdminSettings() {
     return { success: false, error: "Errore imprevisto" };
   }
 }
+
+// Function to get all subscribers for CSV export
+export async function getAllSubscribers() {
+  try {
+    const { data, error } = await supabase
+      .from("subscribers")
+      .select("id, email, preferred_genre, instagram, created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Errore durante il recupero dei subscribers:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.error("Errore imprevisto durante il recupero dei subscribers:", err);
+    return { success: false, error: "Errore imprevisto durante il recupero dei subscribers" };
+  }
+}
