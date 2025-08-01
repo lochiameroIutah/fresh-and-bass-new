@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import WhatsAppButton from "./WhatsAppButton";
 
 const ScrollHeader = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset;
       // Cerca il primo box con classe 'felt-board'
-      const firstBox = document.querySelector('.felt-board');
-      
+      const firstBox = document.querySelector(".felt-board");
+
       if (firstBox) {
         const boxRect = firstBox.getBoundingClientRect();
         const boxTop = boxRect.top + scrollTop;
         const boxHeight = boxRect.height;
-        
+
         // Mostra l'header quando l'utente ha superato completamente il primo box
         setIsVisible(scrollTop > boxTop + boxHeight);
       } else {
         // Fallback: usa la logica precedente se non trova il box
-        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const documentHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
         const scrollPercent = (scrollTop / documentHeight) * 100;
         setIsVisible(scrollPercent >= 30);
       }
@@ -30,18 +30,14 @@ const ScrollHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-
-
-
   return (
     <>
-
-
       {/* Header principale */}
       <div
         className={`fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/10 transition-all duration-200 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-full"
         }`}
       >
         {/* Mobile Layout */}
@@ -56,7 +52,7 @@ const ScrollHeader = () => {
               />
               <div className="flex flex-col">
                 <span className="text-yellow-400 text-xs font-bold uppercase tracking-wide">
-                  18 LUGLIO AL DUMBO(BO)
+                  9 AGOSTO A VILLA PARADISE(BO)
                 </span>
               </div>
             </div>

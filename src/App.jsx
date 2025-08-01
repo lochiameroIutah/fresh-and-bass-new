@@ -1,12 +1,72 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import FeltText from "./FeltText";
 import SubscribeButton from "./components/SubscribeButton";
 import WhatsAppButton from "./components/WhatsAppButton";
 import WhatsAppBox from "./components/WhatsAppBox";
 import ScrollHeader from "./components/ScrollHeader";
+import { getAdminSetting } from "./lib/supabase";
 
 function App() {
+  const [showDirectionsModal, setShowDirectionsModal] = useState(false);
+  const [showPastEventsModal, setShowPastEventsModal] = useState(false);
+  const [isClosingPastEventsModal, setIsClosingPastEventsModal] =
+    useState(false);
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [isInstagramLoading, setIsInstagramLoading] = useState(true);
+  const [shouldLoadInstagram, setShouldLoadInstagram] = useState(false);
+  const [instagramError, setInstagramError] = useState(false);
+
+  // Funzione per aprire la modale degli eventi passati
+  const openPastEventsModal = () => {
+    setShowPastEventsModal(true);
+    setShouldLoadInstagram(true);
+    setIsInstagramLoading(true);
+    setInstagramError(false);
+  };
+
+  // Gestione timeout per Instagram con useEffect
+  useEffect(() => {
+    let timeoutId;
+    if (shouldLoadInstagram && isInstagramLoading) {
+      timeoutId = setTimeout(() => {
+        setIsInstagramLoading(false);
+        setInstagramError(true);
+      }, 10000); // 10 secondi di timeout
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [shouldLoadInstagram, isInstagramLoading]);
+
+  // Funzione per chiudere la modale degli eventi passati con animazione
+  const closePastEventsModal = () => {
+    setIsClosingPastEventsModal(true);
+    setTimeout(() => {
+      setShowPastEventsModal(false);
+      setIsClosingPastEventsModal(false);
+    }, 200); // Durata dell'animazione di uscita
+  };
+
+  // Carica l'URL di Instagram all'avvio
+  useEffect(() => {
+    const loadInstagramUrl = async () => {
+      try {
+        const instagramResult = await getAdminSetting("instagram_embed_url");
+        if (instagramResult.success) {
+          const url =
+            instagramResult.data ||
+            "https://www.instagram.com/fresh_n_bass/embed";
+          setInstagramUrl(url);
+        }
+      } catch (error) {
+        console.error("Errore nel caricamento dell'URL Instagram:", error);
+      }
+    };
+    loadInstagramUrl();
+  }, []);
   return (
     <div className="min-h-screen text-white overflow-hidden bg-image-overlay light">
       <ScrollHeader />
@@ -56,84 +116,102 @@ function App() {
                 alt="Rotating Element Right"
               />
             </div>
-
-            <div className="text-center mb-4 ">
-              <p className="text-xl md:text-lg lg:text-xl text-white font-bold uppercase tracking-wider mb-2 px-4 py-0.5 bg-black">
-                LOCALE CLIMATIZZATO
+            <div className="w-[80%] text-center mb-4">
+              <p className="text-xl md:text-2xl lg:text-3xl outline-2 text-white font-bold uppercase tracking-wider mb-2 px-4 py-0.5 bg-gradient-to-r from-white/30 to-white/70 backdrop-blur-2xl drop-shadow-sm">
+                POOL PARTY
               </p>
             </div>
 
-            <p className="text-lg md:text-2xl lg:text-3xl font-bold text-blue-400 text-center max-w-2xl px-4">
-              Il party estivo col basso che spinge
-            </p>
+            {/* <p className="text-lg md:text-2xl lg:text-3xl font-bold text-blue-400 text-center max-w-2xl px-4">
+              Il Pool Party più fresco dell'estate
+            </p> */}
 
-            {/* WhatsApp Button for summer party */}
-            <div className="mt-4">
+            {/* Buttons for summer party */}
+            <div className="mt-4 flex  sm:flex-row items-center justify-center gap-4">
+              <button
+                onClick={openPastEventsModal}
+                className="inline-flex items-center space-x-2 bg-white/20 border border-white/30 text-white px-4 py-2 rounded-full text-sm font-normal hover:bg-white/10 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 backdrop-blur-sm"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="white" />
+                  <rect x="11" y="7" width="2" height="10" fill="black" />
+                  <rect x="7" y="11" width="10" height="2" fill="black" />
+                </svg>
+                <span>Scopri di più</span>
+              </button>
               <WhatsAppButton />
             </div>
 
             {/* Subscribe Button - Moved below partner logos */}
-            <div className="flex justify-center mt-8 md:mt-12">
+            {/* <div className="flex justify-center mt-8 md:mt-12">
               <SubscribeButton />
-            </div>
+            </div> */}
           </div>
         </header>
 
         <div className="my-8 md:my-12">
           <div className="felt-board rounded-2xl md:rounded-3xl p-6 md:p-8 border border-white/20 animate-slideInRight mb-8 md:mb-12">
             <div className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-yellow-400 mb-4 md:mb-6">
-              <FeltText>18 LUGLIO</FeltText>
+              <FeltText>9 AGOSTO</FeltText>
             </div>
 
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">
-              <FeltText>OFFICINA BISTROT</FeltText>
-            </h2>
-            <div className="flex items-center gap-2 mb-3 md:mb-4">
-              <h3 className="text-xl md:text-2xl font-bold text-white">
-                <FeltText>(DUMBO)</FeltText>
-              </h3>
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl  md:text-2xl font-bold text-white mb-1 md:mb-2">
+                    <FeltText>VILLA PARADISE</FeltText>
+                  </h2>
+                </div>
+
+                <div className="space-y-1 text-base md:text-xl text-white mb-3 md:mb-4">
+                  <a
+                    href="https://maps.app.goo.gl/nu6cPbM2aqghCJBR9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-white hover:text-blue-400 transition-colors ease-in-out"
+                  >
+                    📍 <u>VIA GASTONE PICCININI 9, (BO)</u>
+                  </a>
+                  <button
+                    onClick={() => setShowDirectionsModal(true)}
+                    className="bg-black/80 text-xs backdrop-blur-sm  text-white  py-1.5 pb-2 px-3 rounded-full transition-all duration-300 flex items-center gap-1  md:mt-0 md:ml-4 self-start"
+                  >
+                    🗺️ Come arrivare
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="text-base md:text-xl text-white mb-3 md:mb-4 mb-5">
-              <a
-                href="https://maps.app.goo.gl/o86PcfE7rPYNMsxH9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white  hover:text-blue-400 transition-colors ease-in-out"
-              >
-                📍 <u>VIA CAMILLO CASARINI, 19 (BO)</u>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
+            <div className="text-xl md:text-xl drop-shadow-xl text-blue-400 font-bold ">
+              DALLE 15:00 ALLE 22:00
             </div>
 
-            <div className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-400 mb-4 md:mb-6">
-              DALLE 18:00 ALLE 02:00
+            <div className="space-y-2 mb-6">
+              <div className="text-lg md:text-xl text-white">
+                <u>
+                  <strong>Piscina aperta dalle 10</strong>
+                </u>{" "}
+                <br />
+              </div>
             </div>
-            <div className="text-base md:text-lg text-white mb-4">
-              OUTDOOR 18:00-22:00 | INDOOR 22:00-02:00
-            </div>
+          </div>
 
-            <div
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-yellow-400 mb-2"
-              style={{ textShadow: "0 0 10px rgba(255,193,7,0.5)" }}
-            >
-              FREE ENTRY
+          {/* Informazioni Ingresso - Boxate con sfocatura */}
+          <div className="felt-board rounded-2xl md:rounded-3xl p-6 md:p-8 border border-white/20 mb-8 md:mb-12 shadow-lg">
+            <div className="text-4xl tracking-wider md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-yellow-400 mb-4">
+              <FeltText>INGRESSO:</FeltText>
             </div>
-            <p className="text-white text-lg md:text-xl mb-4 md:mb-6">
-              NO TESSERA
-            </p>
+            <div className="space-y-1.5 text-xl md:text-2xl text-white">
+              <div className="drop-shadow-md">
+                <strong>10 €</strong> per tutta la giornata
+              </div>
+              <div className="drop-shadow-md">
+                <strong>5 €</strong> se entri dopo le 18:00
+              </div>
+              <div className="text-blue-500 font-bold drop-shadow-md text-base md:text-base">
+                + Tessera ARCI obbligatoria <br /> (acquistabile in loco per 5€)
+              </div>
+            </div>
           </div>
 
           {/* Spotify Playlist Box */}
@@ -169,34 +247,29 @@ function App() {
               <FeltText>Line Up</FeltText>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 md:mb-8 justify-items-center">
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                JAHPAWA
-              </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                RIC DE LARGE
-              </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                DOMPROD
-              </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                GRIME SPITTERZ
-              </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                EPCORAW
-              </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 md:mb-8">
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-left">
                 WEERO
               </FeltText>
-              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-center">
-                CLOUD
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-left">
+                RIC DE LARGE
+              </FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-left">
+                EPCORAW
+              </FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-left">
+                SINNER
+              </FeltText>
+              <FeltText className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellow-400 text-left">
+                IKB
               </FeltText>
             </div>
-            <div className="text-xl md:text-2xl text-blue-400 font-bold mb-4 text-center">
-              Hosted by CESK
+            <div className="text-xl text-left md:text-2xl text-blue-400 font-bold mb-4 ">
+              Hosted by <br />{" "}
+              <b className="text-white text-2xl">GRIME SPITTERZ</b>
             </div>
 
-            <div className="text-lg md:text-xl lg:text-2xl text-center">
+            {/* <div className="text-lg md:text-xl lg:text-2xl text-center">
               <p className="font-bold">
                 <span className="text-blue-400">Live Streaming</span>
                 <br />
@@ -204,7 +277,7 @@ function App() {
                   by Jungle Planet Radio
                 </span>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -258,6 +331,166 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Modale per le indicazioni stradali */}
+      {showDirectionsModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300 ease-out"
+          onClick={() => setShowDirectionsModal(false)}
+        >
+          <div
+            className="bg-gray-900 rounded-2xl p-6 md:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out animate-fade-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl md:text-3xl font-bold text-yellow-400">
+                🚗 COME ARRIVARE
+              </h3>
+              <button
+                onClick={() => setShowDirectionsModal(false)}
+                className="text-white hover:text-red-400 text-3xl font-bold transition-colors duration-200"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-4 text-lg md:text-xl text-white">
+              <div>
+                <strong>🚌 Bus:</strong> linee 11, 18, 30, 92 (fermate
+                Pellegrino o Selva Pescarola)
+              </div>
+              <div>
+                <strong>🚲 Bici:</strong> 12 min dalla Stazione Centrale
+              </div>
+              <div>
+                <strong>🚗 Auto:</strong> ampio parcheggio gratuito
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={() => setShowDirectionsModal(false)}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200"
+              >
+                Chiudi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale fullscreen per eventi passati */}
+      {showPastEventsModal && (
+        <div
+          className={`fixed inset-0 bg-transparent backdrop-blur-lg flex items-center justify-center z-50 transition-all duration-300 ${
+            isClosingPastEventsModal ? "animate-fade-out" : "animate-fade-in"
+          }`}
+          onClick={closePastEventsModal}
+        >
+          <div
+            className="bg-transparent rounded-2xl max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col overflow-visible"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header della modale */}
+            <div className="flex justify-between items-center p-6">
+              <h2 className="text-xl md:text-2xl font-bold text-yellow-400 text-center flex-1">
+                Ecco come sono andati gli altri fresh 'n bass
+              </h2>
+              <button
+                onClick={closePastEventsModal}
+                className="text-white hover:text-yellow-400 transition-colors text-2xl font-bold ml-4"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Contenuto della modale */}
+            <div className="flex-1 p-6 overflow-y-auto flex items-center justify-center">
+              {instagramUrl ? (
+                <div className="w-full max-w-2xl">
+                  <div
+                    className="relative w-full rounded-lg overflow-hidden"
+                    style={{ paddingBottom: "125%" }}
+                  >
+                    {isInstagramLoading && !instagramError && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-lg">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+                          <p className="text-gray-400">
+                            Caricamento Instagram...
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {instagramError && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                          <p className="text-gray-400 mb-4">
+                            Errore nel caricamento di Instagram
+                          </p>
+                          <button
+                            onClick={() => {
+                              setInstagramError(false);
+                              setIsInstagramLoading(true);
+                              setShouldLoadInstagram(false);
+                              setTimeout(
+                                () => setShouldLoadInstagram(true),
+                                100
+                              );
+                            }}
+                            className="bg-yellow-400 text-black px-4 py-2 rounded-lg hover:bg-yellow-300 transition-colors"
+                          >
+                            Riprova
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {shouldLoadInstagram && (
+                      <iframe
+                        src={instagramUrl}
+                        className="absolute top-0 left-0 w-full h-full"
+                        frameBorder="0"
+                        scrolling="no"
+                        allowTransparency="true"
+                        allow="encrypted-media"
+                        title="Instagram Posts"
+                        style={{ backgroundColor: "transparent" }}
+                        onLoad={() => {
+                          setIsInstagramLoading(false);
+                          setInstagramError(false);
+                        }}
+                        onError={() => {
+                          setIsInstagramLoading(false);
+                          setInstagramError(true);
+                        }}
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                      />
+                    )}
+                  </div>
+
+                  <div className=" text-center italic text-amber-400 leading-3 text-sm md:text-xl mt-6">
+                    <p className="drop-shadow-lg">
+                      Allora sarai dei nostri? Clicca sul pulsante qua sotto per
+                      iniziare, ti aspettiamo!
+                    </p>
+                  </div>
+                  <div className="mt-4 flex justify-center">
+                    <WhatsAppButton />
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-800 rounded-lg p-8 text-center w-full max-w-2xl">
+                  <p className="text-gray-400 text-lg">
+                    Instagram feed non disponibile
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
